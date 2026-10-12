@@ -143,6 +143,10 @@ online-deal-scouter/
 │
 ├── app.py                        # Gradio interactive web dashboard
 ├── deal_agent_framework.py       # Pipeline execution controller
+├── seed_vectorstore.py           # ChromaDB vector store seeding script
+├── train_baselines.py            # Random Forest baseline and Ensemble training
+├── test_live_pipeline.py         # End-to-end live pipeline verification test
+├── evaluate_models.py            # Benchmark evaluation CLI
 ├── items.py                      # Data schema and tokenizer utilities
 ├── testing.py                    # Benchmarking and evaluation harness
 ├── requirements.txt              # Production dependencies
@@ -194,11 +198,21 @@ The deployed service will be registered under the app name `pricer-service` and 
 
 ---
 
-### 3. Initialize the Vector Store & Database
-Populate local vector embeddings in ChromaDB and create the PostgreSQL tables:
+### 3. Initialize the Vector Store, Baseline Models & Database
+Seed the ChromaDB vector store with reference products, train the local Random Forest & Ensemble models, and initialize database tables:
 
 ```bash
+# 1. Initialize PostgreSQL / SQLite tables
 python -c "from database.connection import init_db; init_db()"
+
+# 2. Seed ChromaDB vector store (1,500 reference products)
+python seed_vectorstore.py
+
+# 3. Train local Random Forest baseline & Ensemble meta-regressor
+python train_baselines.py
+
+# 4. Optional: Run end-to-end smoke test
+python test_live_pipeline.py
 ```
 
 ---

@@ -125,12 +125,13 @@ class DealAgentFramework:
         self.init_agents_as_needed()
         self.log("Kicking off Planning Agent scan cycle")
         memory_urls = [opp.deal.url for opp in self.memory]
-        result = self.planner.plan(memory=memory_urls)
+        results = self.planner.plan(memory=memory_urls)
         
-        self.log(f"Planning Agent cycle finished. Result: {result}")
-        if result:
-            self.save_opportunity(result)
+        self.log(f"Planning Agent cycle finished. Surfaced {len(results)} profitable opportunities.")
+        for opp in results:
+            self.save_opportunity(opp)
         return self.memory
+
 
     @classmethod
     def get_plot_data(cls, max_datapoints: int = 1000):
